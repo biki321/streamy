@@ -1,5 +1,4 @@
 import NextAuth from "next-auth";
-import { JWT } from "next-auth/jwt";
 import SpotifyProvider from "next-auth/providers/spotify";
 import spotifyApi, { LOGIN_URL } from "../../../lib/spotify";
 
@@ -31,7 +30,7 @@ export default NextAuth({
       }
 
       //return previous token if the access token has not expired yet
-      if (Date.now() < (token.accessTokenExpires as number)) {
+      if (Date.now() < token.accessTokenExpires) {
         return token;
       }
 

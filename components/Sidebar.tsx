@@ -7,15 +7,35 @@ import {
   SearchIcon,
 } from "@heroicons/react/outline";
 import { signOut, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { playlistIdState } from "../atoms/playlistAtom";
+import useSpotify from "../hooks/useSpotify";
 
 function Sidebar() {
+  const spotifyApi = useSpotify();
   const { data: session } = useSession();
+  const [playlists, setplaylists] = useState<
+    SpotifyApi.PlaylistObjectSimplified[]
+  >([]);
+  const [playlistId, setplaylistId] = useRecoilState(playlistIdState);
   console.log("session sidebar", session);
+
+  useEffect(() => {
+    if (spotifyApi.getAccessToken()) {
+      spotifyApi.getUserPlaylists().then((data) => {
+        console.log("playlist", data.body.items);
+        setplaylists(data.body.items);
+      });
+    }
+  }, [spotifyApi, session]);
+
   return (
     <div>
       <div
-        className="text-white p-5 text-xs border-r 
-      border-[#292B30] space-y-4"
+        className="text-white p-5 border-r 
+      border-[#292B30] space-y-4 h-screen overflow-y-scroll scrollbar-hide
+       text-xs lg:text-sm sm:max-w-[12rem] lg:max-w-[15rem] pb-36"
       >
         <button
           className="flex items-center space-x-2 
@@ -69,12 +89,15 @@ function Sidebar() {
         </button>
         <hr className="border-t-[0.1px] border-[#292B30]" />
 
-        <p className="cursor-pointer  opacity-50">Playlists</p>
-        <p className="cursor-pointer">Playlist 1</p>
-        <p className="cursor-pointer">Playlist 1</p>
-        <p className="cursor-pointer">Playlist 1</p>
-        <p className="cursor-pointer">Playlist 1</p>
-        <p className="cursor-pointer">Playlist 1</p>
+        {playlists.map((playlist) => (
+          <p
+            key={playlist.id}
+            className="cursor-pointer"
+            onClick={() => setplaylistId(playlist.id)}
+          >
+            {playlist.name}
+          </p>
+        ))}
       </div>
     </div>
   );

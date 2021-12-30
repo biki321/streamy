@@ -1,9 +1,12 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
+import { Session } from "next-auth/core/types";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
-import Image from "next/image";
+import Center from "../components/Center";
+import Player from "../components/Player";
 import Sidebar from "../components/Sidebar";
 
-const Home: NextPage = () => {
+const Home = () => {
   return (
     <div className="bg-[#212328] h-screen overflow-hidden">
       <Head>
@@ -12,14 +15,27 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
+      <main className="flex">
         <Sidebar />
-        {/* center */}
+        <Center />
       </main>
 
-      <div>{/* player */}</div>
+      <div>
+        <Player />
+      </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<{
+  session: Session | null;
+}> = async (context) => {
+  const session = await getSession(context);
+  return {
+    props: {
+      session,
+    },
+  };
 };
 
 export default Home;
