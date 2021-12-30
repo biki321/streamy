@@ -43,6 +43,7 @@ function Player() {
 
   const handlePlayPause = () => {
     spotifyApi.getMyCurrentPlaybackState().then((data) => {
+      if (!data.body) return;
       if (data.body.is_playing) {
         spotifyApi.pause();
         setIsPlaying(false);
@@ -53,12 +54,13 @@ function Player() {
     });
   };
 
-  const debouncedAdjustVolume = useCallback(() => {
-    console.log("debouncedAdjustVol");
-    debounce((volume) => {
-      spotifyApi.setVolume(volume).catch((error) => console.log(error));
-    }, 500);
-  }, [spotifyApi]);
+  const debouncedAdjustVolume = useCallback(
+    () =>
+      debounce((volume) => {
+        spotifyApi.setVolume(volume).catch((error) => console.log(error));
+      }, 500),
+    [spotifyApi]
+  );
 
   useEffect(() => {
     if (spotifyApi.getAccessToken() && !currentTrackId) {
@@ -79,7 +81,7 @@ function Player() {
     text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8"
     >
       <div className="flex items-center space-x-4">
-        <div className="hidden md:inlne h-10 w-10">
+        <div className="md:inlne h-10 w-10">
           <Image
             width={40}
             height={40}

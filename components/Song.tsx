@@ -6,28 +6,25 @@ import { millisToMinutesAndSeconds } from "../lib/time";
 import placeholderImg from "../placeholderImg";
 
 interface IProps {
-  track: SpotifyApi.PlaylistTrackObject;
-  order: number;
+  track: SpotifyApi.TrackObjectFull;
 }
 
-function Song({ track, order }: IProps) {
+function Song({ track }: IProps) {
   const spotifyApi = useSpotify();
   const [currentTrackId, setCurrentTrackId] =
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
 
   const playSong = () => {
-    setCurrentTrackId(track.track.id);
+    setCurrentTrackId(track.id);
     setIsPlaying(true);
     spotifyApi.play({
-      uris: [track.track.uri],
+      uris: [track.uri],
     });
   };
 
   const imgUrl =
-    track.track.album.images.length > 0
-      ? track.track.album.images[0].url
-      : placeholderImg;
+    track.album.images.length > 0 ? track.album.images[0].url : placeholderImg;
 
   return (
     <div className="py-4 cursor-pointer" onClick={playSong}>
@@ -40,9 +37,9 @@ function Song({ track, order }: IProps) {
           className="rounded-full"
         />
         <div>
-          <p className="font-bold truncate">{track.track.name}</p>
+          <p className="font-bold truncate">{track.name}</p>
           <p className="text-xs">
-            {millisToMinutesAndSeconds(track.track.duration_ms)}
+            {millisToMinutesAndSeconds(track.duration_ms)}
           </p>
         </div>
       </div>

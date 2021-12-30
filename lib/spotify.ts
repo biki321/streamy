@@ -15,6 +15,8 @@ const scopes = [
   "user-read-currently-playing",
   "user-read-recently-played",
   "user-follow-read",
+  "playlist-modify-public",
+  "playlist-modify-private",
 ].join(" ");
 
 const params = {

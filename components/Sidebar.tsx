@@ -7,6 +7,7 @@ import {
   SearchIcon,
 } from "@heroicons/react/outline";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { playlistIdState } from "../atoms/playlistAtom";
@@ -19,6 +20,7 @@ function Sidebar() {
     SpotifyApi.PlaylistObjectSimplified[]
   >([]);
   const [playlistId, setplaylistId] = useRecoilState(playlistIdState);
+  const router = useRouter();
   console.log("session sidebar", session);
 
   useEffect(() => {
@@ -26,9 +28,31 @@ function Sidebar() {
       spotifyApi.getUserPlaylists().then((data) => {
         console.log("playlist", data.body.items);
         setplaylists(data.body.items);
+        setplaylistId((prevState) =>
+          !prevState ? data.body.items[0].id : prevState
+        );
       });
     }
-  }, [spotifyApi, session]);
+  }, [spotifyApi, session, setplaylistId]);
+
+  const handleOnClickPlaylist = (id: string) => {
+    setplaylistId(id);
+    router.push(`/playlist/${id}`);
+  };
+
+  const handleOnClickCreatePlaylist = () => {
+    spotifyApi
+      .createPlaylist("My playlist", {
+        description: "My description",
+        public: true,
+      })
+      .then((data) => {
+        setplaylistId(data.body.id);
+        setplaylists((prev) => [data.body, ...prev]);
+        router.push(`/playlist/${data.body.id}`);
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <div>
@@ -69,6 +93,7 @@ function Sidebar() {
         <button
           className="flex items-center space-x-2 
         hover:text-amber-600"
+          onClick={handleOnClickCreatePlaylist}
         >
           <PlusCircleIcon className="h-5 w-5" />
           <p>Create Playlist</p>
@@ -93,7 +118,7 @@ function Sidebar() {
           <p
             key={playlist.id}
             className="cursor-pointer"
-            onClick={() => setplaylistId(playlist.id)}
+            onClick={() => handleOnClickPlaylist(playlist.id)}
           >
             {playlist.name}
           </p>
