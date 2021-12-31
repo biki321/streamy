@@ -4,7 +4,11 @@ import { playlistState } from "../atoms/playlistAtom";
 import useSpotify from "../hooks/useSpotify";
 import Song from "./Song";
 
-function Songs() {
+interface IProps {
+  currentUserId: string | null;
+}
+
+function Songs({ currentUserId }: IProps) {
   const [playlist, setPlaylist] = useRecoilState(playlistState);
   const spotifyApi = useSpotify();
 
@@ -37,13 +41,15 @@ function Songs() {
         <div key={track.track.id}>
           <div className="flex items-center justify-between">
             <Song track={track.track} />
-            <button
-              type="button"
-              onClick={() => handleRemoveTrack(track.track.id)}
-              className=""
-            >
-              <TrashIcon className="button" />
-            </button>
+            {currentUserId === playlist.owner.id ? (
+              <button
+                type="button"
+                onClick={() => handleRemoveTrack(track.track.id)}
+                className=""
+              >
+                <TrashIcon className="button" />
+              </button>
+            ) : null}
           </div>
           <hr className="border-t-[0.1px] border-[#292B30]" />
         </div>
