@@ -1,4 +1,5 @@
 import { TrashIcon } from "@heroicons/react/solid";
+import { Fragment } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { playlistState } from "../atoms/playlistAtom";
 import useSpotify from "../hooks/useSpotify";
@@ -36,10 +37,10 @@ function Songs({ currentUserId }: IProps) {
   };
 
   return (
-    <div className="px-8 flex flex-col space-y-1 text-white">
+    <>
       {playlist?.tracks.items.map((track, i) => (
-        <div key={track.track.id}>
-          <div className="flex items-center justify-between">
+        <Fragment key={track.track.id}>
+          <div className="flex items-center justify-between hover:bg-graysecond">
             <Song track={track.track} />
             {currentUserId === playlist.owner.id ? (
               <button
@@ -52,9 +53,9 @@ function Songs({ currentUserId }: IProps) {
             ) : null}
           </div>
           <hr className="border-t-[0.1px] border-[#292B30]" />
-        </div>
+        </Fragment>
       ))}
-    </div>
+    </>
   );
 }
 

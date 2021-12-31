@@ -16,19 +16,22 @@ function login({ providers }: { providers: Provider | null }) {
   console.log("provider at login", Object.values(providers!));
   return (
     <div
-      className="flex flex-col items-center bg-[#212328] min-h-screen
-     w-full justify-center"
+      className="flex flex-col items-center bg-grayfirst min-h-screen
+     w-full justify-center space-y-3"
     >
-      {/* <Image
-        className="w-52 mb-5"
-        src="https://links.papareact.com/9xl"
-        alt=""
-      /> */}
+      <Image
+        width={150}
+        height={150}
+        src="https://i.imgur.com/Yd4KSUf.png"
+        alt="spotify logo"
+      />
 
       {Object.values(providers!).map((provider) => (
         <div key={provider.name}>
           <button
-            className="bg-[#18D860] text-white p-5 rounded-full"
+            className="bg-[#18D860] text-white p-3 font-bold rounded-full
+            border-2 border-transparent hover:border-white hover:bg-grayfirst 
+            hover:text-white tracking-wide	"
             onClick={() => signIn(provider.id, { callbackUrl: "/" })}
           >
             Login with {provider.name}

@@ -1,2 +1,2 @@
-const placeholderImg = "https://via.placeholder.com/300";
+const placeholderImg = "https://i.imgur.com/PIymBsC.jpg";
 export default placeholderImg;

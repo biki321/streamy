@@ -27,17 +27,24 @@ function Song({ track }: IProps) {
     track.album.images.length > 0 ? track.album.images[0].url : placeholderImg;
 
   return (
-    <div className="py-4 cursor-pointer" onClick={playSong}>
+    <div className="py-4 pl-3 cursor-pointer rounded-md" onClick={playSong}>
       <div className="flex items-center space-x-4">
-        <Image
-          src={imgUrl}
-          width={44}
-          height={44}
-          alt=""
-          className="rounded-full"
-        />
+        <div
+          className="shrink-0 hover:scale-110 transition-transform 
+        duration-100 ease-out;"
+        >
+          <Image
+            src={imgUrl}
+            width={44}
+            height={44}
+            alt=""
+            className="rounded-full"
+          />
+        </div>
         <div>
-          <p className="font-bold truncate">{track.name}</p>
+          <p className="font-semibold text-xs md:text-base lg:text-lg">
+            {track.name}
+          </p>
           <p className="text-xs">
             {millisToMinutesAndSeconds(track.duration_ms)}
           </p>

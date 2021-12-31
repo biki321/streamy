@@ -55,15 +55,18 @@ function Playlist() {
   return (
     <Layout>
       <div
-        className="flex-grow text-white h-screen overflow-y-scroll 
+        className=" text-white h-screen overflow-y-scroll 
     scrollbar-hide"
       >
         <section
           className={`flex items-end space-x-7 bg-gradient-to-b
-      to-[#212328] ${color} h-80 text-white p-8`}
+      to-[#212328] ${color} h-72 lg:h-80 text-white p-5`}
         >
           {playlist?.images?.[0]?.url && (
-            <div className="shadow-2xl">
+            <div
+              className="shadow-2xl hover:scale-110 
+            transition-transform duration-100 ease-out;"
+            >
               <Image
                 src={playlist?.images?.[0]?.url}
                 width={176}
@@ -73,7 +76,7 @@ function Playlist() {
             </div>
           )}
           <div>
-            <p>Playlist</p>
+            <p className="text-gray-400">Playlist</p>
             <h1
               className="text-2xl md:text-3xl xl:text-5xl
           font-bold"
@@ -82,18 +85,16 @@ function Playlist() {
             </h1>
           </div>
         </section>
-        <section className="pl-8 pb-28">
+        <section className="px-5 pb-32 space-y-3">
           <div>
             <Songs currentUserId={currentUserId} />
+            <hr />
           </div>
-          <hr />
           {playlist?.owner.id === currentUserId && (
-            <div>
-              <AddTrack
-                playlistId={playlist.id}
-                fetchPlaylistData={fetchPlaylistData}
-              />
-            </div>
+            <AddTrack
+              playlistId={playlist.id}
+              fetchPlaylistData={fetchPlaylistData}
+            />
           )}
         </section>
       </div>

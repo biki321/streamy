@@ -2,11 +2,13 @@ import type { GetServerSideProps, NextPage } from "next";
 import { Session } from "next-auth/core/types";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import Player from "../components/Player";
 import Sidebar from "../components/Sidebar";
 import Image from "next/image";
 import placeholderImg from "../placeholderImg";
+import { MenuIcon } from "@heroicons/react/solid";
+import useWindowSize from "../hooks/useWindowSize";
 
 const Layout = ({
   children,
@@ -14,6 +16,8 @@ const Layout = ({
   children: ReactElement[] | ReactElement | null;
 }) => {
   const { data: session } = useSession();
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const { windowWidth } = useWindowSize();
 
   return (
     <div className="bg-grayfirst h-screen overflow-hidden">
@@ -24,29 +28,36 @@ const Layout = ({
       </Head>
 
       <main className="flex">
-        <Sidebar />
-        <section className="grow space-y-6">
-          <header className="flex justify-end">
-            <div
-              className="flex items-center space-x-3
-        opacity-90 hover:opacity-80 cursor-pointer rounded-full
-        p-1 pr-2 bg-black text-white mr-2"
-            >
-              <Image
-                className="rounded-full"
-                src={session?.user?.image ?? placeholderImg}
-                width={35}
-                height={35}
-                alt="user image"
-              />
-              <h2>{session?.user?.name}</h2>
-            </div>
-          </header>
-          {children}
-        </section>
+        <Sidebar
+          isSideBarOpen={isSideBarOpen}
+          setIsSideBarOpen={setIsSideBarOpen}
+        />
+        {windowWidth && windowWidth < 768 ? (
+          <MenuIcon
+            className="w-5 h-5 cursor-pointer text-white fixed 
+        top-3 left-3 z-0"
+            onClick={() => setIsSideBarOpen((prevState) => !prevState)}
+          />
+        ) : null}
+        <div
+          className="flex items-center space-x-3 rounded-full
+          bg-gray-900 hover:bg-gray-700 transition-colors
+        p-[2px] text-white m-1 mr-3 w-24  fixed top-3 right-5"
+        >
+          <Image
+            className="rounded-full"
+            src={session?.user?.image ?? placeholderImg}
+            width={32}
+            height={32}
+            objectFit="cover"
+            alt="user image"
+          />
+          <h2 className="font-semibold">{session?.user?.name}</h2>
+        </div>
+        <section className="grow">{children}</section>
       </main>
 
-      <div className="sticky bottom-0">
+      <div className="fixed w-screen bottom-0">
         <Player />
       </div>
     </div>

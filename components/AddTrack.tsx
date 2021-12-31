@@ -32,7 +32,11 @@ function AddTrack({ playlistId, fetchPlaylistData }: IProps) {
   );
 
   const handleSrchTxtChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length < 1) return;
+    if (e.target.value.length < 1) {
+      setTracks([]);
+      setSearchTxt(e.target.value);
+      return;
+    }
     setSearchTxt(e.target.value);
     debouncedChangeHandler(e.target.value);
   };
@@ -67,7 +71,10 @@ function AddTrack({ playlistId, fetchPlaylistData }: IProps) {
 
       {tracks.map((track) => (
         <Fragment key={track.id}>
-          <div className="flex items-center justify-between">
+          <div
+            className="flex items-center justify-between
+          hover:bg-graysecond"
+          >
             <Song track={track} />
             {addTrackLoading && addTrackLoading === track.id ? (
               "loading"
@@ -75,7 +82,7 @@ function AddTrack({ playlistId, fetchPlaylistData }: IProps) {
               <button
                 onClick={() => addTrack(track.id)}
                 type="button"
-                className="px-5 py-1 rounded-l-full rounded-r-full
+                className="px-3 md:px-5 py-1 text-sm md:text-base rounded-l-full rounded-r-full
             border-solid border-white border-2"
               >
                 Add

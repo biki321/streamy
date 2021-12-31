@@ -11,7 +11,7 @@ import {
 import { debounce } from "lodash";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
 import useSongInfo from "../hooks/useSongInfo";
@@ -54,11 +54,11 @@ function Player() {
     });
   };
 
-  const debouncedAdjustVolume = useCallback(
+  const debouncedAdjustVolume = useMemo(
     () =>
       debounce((volume) => {
         spotifyApi.setVolume(volume).catch((error) => console.log(error));
-      }, 500),
+      }, 300),
     [spotifyApi]
   );
 
@@ -71,23 +71,25 @@ function Player() {
 
   useEffect(() => {
     if (volume > 0 && volume < 100) {
-      debouncedAdjustVolume();
+      debouncedAdjustVolume(volume);
     }
   }, [debouncedAdjustVolume, volume]);
 
   return (
     <div
-      className="h-20 bg-graysecond
-    text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8"
+      className="h-16 bg-graysecond
+    text-white flex justify-between text-xs md:text-base px-3 md:px-5"
     >
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 flex-1">
         <div className="md:inlne h-10 w-10">
-          <Image
-            width={40}
-            height={40}
-            src={songInfo?.album.images?.[0]?.url ?? placeholderImg}
-            alt=""
-          />
+          {songInfo?.album.images?.[0]?.url ? (
+            <Image
+              width={40}
+              height={40}
+              src={songInfo?.album.images?.[0]?.url}
+              alt=""
+            />
+          ) : null}
         </div>
         <div>
           <h3>{songInfo?.name}</h3>
@@ -95,8 +97,8 @@ function Player() {
         </div>
       </div>
 
-      <div className="flex items-center justify-evenly">
-        <SwitchHorizontalIcon className="button" />
+      <div className="flex items-center justify-evenly flex-1">
+        {/* <SwitchHorizontalIcon className="button" /> */}
         <RewindIcon
           className="button"
           //this is not working
@@ -113,16 +115,19 @@ function Player() {
           //this is not working
           //onClick={() => spotifyApi.skipToNext()}
         />
-        <ReplyIcon className="button" />
+        {/* <ReplyIcon className="button" /> */}
       </div>
 
-      <div className="flex items-center space-x-3 md:space-x-4 justify-end pr-5">
+      <div
+        className="flex items-center space-x-1 md:space-x-4 justify-end 
+      flex-1"
+      >
         <VolumeOffIcon
-          className="button"
+          className="button w-4 h-4 md:h-5 md:w-5"
           onClick={() => volume > 0 && setVolume((pv) => pv - 10)}
         />
         <input
-          className="w-14 md:w-28"
+          className="w-14 h-1 md:w-28"
           type="range"
           value={volume}
           min={0}
@@ -130,7 +135,7 @@ function Player() {
           onChange={(e) => setVolume(Number(e.target.value))}
         />
         <VolumeUpIcon
-          className="button"
+          className="button w-4 h-4 md:h-5 md:w-5"
           onClick={() => volume < 100 && setVolume((pv) => pv + 10)}
         />
       </div>
