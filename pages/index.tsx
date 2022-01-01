@@ -12,7 +12,7 @@ const Home: NextPage = () => {
   const spotifyApi = useSpotify();
   const [featuredPlaylist, setFeaturedPlaylist] =
     useState<SpotifyApi.ListOfFeaturedPlaylistsResponse | null>(null);
-  const [userPlaylists, setUserPlaylists] = useRecoilState(userPlaylistState);
+  const userPlaylists = useRecoilValue(userPlaylistState);
 
   useEffect(() => {
     const fetchData = async () => {

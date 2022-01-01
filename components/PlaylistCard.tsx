@@ -1,6 +1,6 @@
 import Image from "next/image";
 import router from "next/router";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { playlistIdState } from "../atoms/playlistAtom";
 import placeholderImg from "../placeholderImg";
 
@@ -8,7 +8,7 @@ interface IProps {
   playlist: SpotifyApi.PlaylistObjectSimplified;
 }
 function PlaylistCard({ playlist }: IProps) {
-  const [playlistId, setPlaylistId] = useRecoilState(playlistIdState);
+  const setPlaylistId = useSetRecoilState(playlistIdState);
 
   const handleOnClickPlaylist = (id: string) => {
     setPlaylistId(id);
@@ -31,9 +31,6 @@ function PlaylistCard({ playlist }: IProps) {
         alt="playlist cover image"
       />
       <h1 className="font-semibold">{playlist.name.slice(0, 15) + ".."}</h1>
-      {/* <p className="text-gray-400">
-        {playlist.description?.slice(0, 30) + "..."}
-      </p> */}
     </div>
   );
 }

@@ -1,21 +1,36 @@
-import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { shuffle } from "lodash";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { playlistIdState, playlistState } from "../../atoms/playlistAtom";
+import { useRecoilState } from "recoil";
+import { playlistState } from "../../atoms/playlistAtom";
 import Songs from "../../components/Songs";
 import useSpotify from "../../hooks/useSpotify";
 import Image from "next/image";
-import placeholderImg from "../../placeholderImg";
 import Layout from "../../components/Layout";
 import AddTrack from "../../components/AddTrack";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
-const colors = ["from-indigo-500", "from-blue-500", "from-red-500"];
+const colors = [
+  "from-indigo-500",
+  "from-blue-500",
+  "from-red-500",
+  "from-cyan-500",
+  "from-sky-500",
+  "from-violet-500",
+  "from-purple-500",
+  "from-orange-500",
+  "from-amber-500",
+  "from-yellow-500",
+  "from-lime-500",
+  "from-green-500	",
+];
 
 function Playlist() {
   const { data: session } = useSession();
+  const router = useRouter();
+  const playlistId = router.query.playlistId as string;
+  console.log("router query playlist page", router.query);
   const [color, setcolor] = useState<string | null>(null);
-  const playlistId = useRecoilValue(playlistIdState);
   const [playlist, setPlaylist] = useRecoilState(playlistState);
   const spotifyApi = useSpotify();
   //session info do not have user id so fetching it
@@ -23,7 +38,13 @@ function Playlist() {
 
   const fetchPlaylistData = useCallback(() => {
     if (!playlistId) return;
-    if (!spotifyApi.getAccessToken()) return;
+    if (!spotifyApi.getAccessToken()) {
+      console.log(
+        "spotify acces toekn playlist page",
+        spotifyApi.getAccessToken()
+      );
+      return;
+    }
     spotifyApi
       .getPlaylist(playlistId)
       .then((data) => {
@@ -44,13 +65,13 @@ function Playlist() {
       .then((data) => setcurrentUserId(data.body.id))
       .catch((err) => console.log(err));
     //without playlistid it was not fetching data
-  }, [spotifyApi, playlistId]);
+  }, [spotifyApi, playlistId, session]);
 
   useEffect(() => {
     console.log("effect get plauylist center");
     if (!playlistId) return;
     fetchPlaylistData();
-  }, [fetchPlaylistData, playlistId, setPlaylist, spotifyApi]);
+  }, [fetchPlaylistData, playlistId, setPlaylist, session, spotifyApi]);
 
   return (
     <Layout>

@@ -1,11 +1,4 @@
-import {
-  HeartIcon,
-  HomeIcon,
-  LibraryIcon,
-  PlusCircleIcon,
-  RssIcon,
-  SearchIcon,
-} from "@heroicons/react/outline";
+import { HomeIcon, PlusCircleIcon } from "@heroicons/react/outline";
 import { LogoutIcon, XIcon } from "@heroicons/react/solid";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -40,7 +33,7 @@ function Sidebar({ isSideBarOpen, setIsSideBarOpen }: IProps) {
         );
       });
     }
-  }, [spotifyApi, session, setplaylistId, setUserPlaylists]);
+  }, [spotifyApi, , session, setplaylistId, setUserPlaylists]);
 
   useEffect(() => {
     if (windowWidth && windowWidth >= 768) setIsSideBarOpen(true);

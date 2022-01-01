@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
 import useSpotify from "../hooks/useSpotify";
 import { millisToMinutesAndSeconds } from "../lib/time";
@@ -11,16 +11,25 @@ interface IProps {
 
 function Song({ track }: IProps) {
   const spotifyApi = useSpotify();
-  const [currentTrackId, setCurrentTrackId] =
-    useRecoilState(currentTrackIdState);
-  const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
+  const setCurrentTrackId = useSetRecoilState(currentTrackIdState);
+  const setIsPlaying = useSetRecoilState(isPlayingState);
 
-  const playSong = () => {
-    setCurrentTrackId(track.id);
-    setIsPlaying(true);
-    spotifyApi.play({
-      uris: [track.uri],
-    });
+  const playSong = async () => {
+    try {
+      const { body } = await spotifyApi.getMyCurrentPlaybackState();
+      if (!body) {
+        alert(
+          "No active spotify device, turn on a spotify device then play and pause a song on the device, then control from this app"
+        );
+        return;
+      }
+      console.log("at play song song.tsx", body);
+      setCurrentTrackId(track.id);
+      setIsPlaying(true);
+      spotifyApi.play({
+        uris: [track.uri],
+      });
+    } catch (error) {}
   };
 
   const imgUrl =

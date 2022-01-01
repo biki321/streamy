@@ -16,11 +16,10 @@ import { useRecoilState } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
 import useSongInfo from "../hooks/useSongInfo";
 import useSpotify from "../hooks/useSpotify";
-import placeholderImg from "../placeholderImg";
 
 function Player() {
   const spotifyApi = useSpotify();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [currentTrackId, setCurrentIdTrack] =
     useRecoilState(currentTrackIdState);
   const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
@@ -42,6 +41,7 @@ function Player() {
   }, [setCurrentIdTrack, setIsPlaying, songInfo, spotifyApi]);
 
   const handlePlayPause = () => {
+    if (!spotifyApi.getAccessToken()) return;
     spotifyApi.getMyCurrentPlaybackState().then((data) => {
       if (!data.body) return;
       if (data.body.is_playing) {
@@ -57,7 +57,8 @@ function Player() {
   const debouncedAdjustVolume = useMemo(
     () =>
       debounce((volume) => {
-        spotifyApi.setVolume(volume).catch((error) => console.log(error));
+        if (spotifyApi.getAccessToken())
+          spotifyApi.setVolume(volume).catch((error) => console.log(error));
       }, 300),
     [spotifyApi]
   );
@@ -67,7 +68,7 @@ function Player() {
       fetchCurrentSong();
       setVolume(50);
     }
-  }, [currentTrackId, fetchCurrentSong, spotifyApi]);
+  }, [currentTrackId, fetchCurrentSong, spotifyApi, session]);
 
   useEffect(() => {
     if (volume > 0 && volume < 100) {

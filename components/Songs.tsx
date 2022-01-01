@@ -1,6 +1,6 @@
 import { TrashIcon } from "@heroicons/react/solid";
 import { Fragment } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { playlistState } from "../atoms/playlistAtom";
 import useSpotify from "../hooks/useSpotify";
 import Song from "./Song";
