@@ -8,7 +8,7 @@ export async function middleware(req: any) {
     secret: process.env.JWT_SECRET!,
     secureCookie:
       process.env.NEXTAUTH_URL?.startsWith("https://") ??
-      !process.env.VERCEL_URL,
+      !!process.env.VERCEL_URL,
   });
   console.log("token at middleware", token);
   const { pathname } = req.nextUrl;
