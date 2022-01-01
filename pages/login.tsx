@@ -32,7 +32,11 @@ function login({ providers }: { providers: Provider | null }) {
             className="bg-[#18D860] text-white p-3 font-bold rounded-full
             border-2 border-transparent hover:border-white hover:bg-grayfirst 
             hover:text-white tracking-wide	"
+            //this redirect to home page wfter login
             onClick={() => signIn(provider.id, { callbackUrl: "/" })}
+            //but this keeps user on login page
+            //in localhost
+            // onClick={() => signIn(provider.id)}
           >
             Login with {provider.name}
           </button>

@@ -50,6 +50,19 @@ export default NextAuth({
         },
       };
     },
+
+    redirect({ url, baseUrl }) {
+      console.log("url at redirect", url);
+      console.log("baseUrl at redirect", baseUrl);
+
+      if (url.startsWith(baseUrl)) return url;
+      // Allows relative callback URLs
+      else if (url.startsWith("/")) return new URL(url, baseUrl).toString();
+      return baseUrl;
+      // return url.startsWith(baseUrl)
+      //   ? Promise.resolve(url)
+      //   : Promise.resolve(baseUrl);
+    },
   },
 });
 
